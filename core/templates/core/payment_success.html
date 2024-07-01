@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+{% load static %}
+{% load cart_template_tag %}
+
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Order Placed - Ashish Site</title>
+  <meta name="description" content="Order placed successfully">
+
+  <!-- Favicons -->
+  <link rel="icon" href="{% static 'assets/img/favicon.png' %}">
+  <link rel="apple-touch-icon" href="{% static 'assets/img/apple-touch-icon.png' %}">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="{% static 'vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+  <link href="{% static 'vendor/swiper/swiper-bundle.min.css' %}" rel="stylesheet">
+
+  <!-- Template Main CSS File -->
+  <link href="{% static 'css/style.css' %}" rel="stylesheet">
+</head>
+
+<body>
+
+  <header id="header" class="fixed-top d-flex align-items-center">
+    <div class="container">
+      <div class="header-container d-flex align-items-center justify-content-between">
+        <div class="logo">
+          <h1 class="text-light"><a href="{% url 'index' %}">Ashish Site</a></h1>
+        </div>
+
+        <nav id="navbar" class="navbar">
+          {% if user.is_authenticated %}
+          <ul>
+            <li><a class="nav-link scrollto active" href="{% url 'index' %}">Home</a></li>
+            <li><a class="nav-link scrollto active" href="{% url 'orderlist' %}">Cart &nbsp;<span style="color:red;">{{ request.user|cart_item_count }}</span></a></li>
+            {% if user.is_superuser %}
+            <li><a class="nav-link scrollto active" href="{% url 'add_product' %}">Add Product</a></li>
+            {% endif %}
+            <li><a class="nav-link scrollto active" href="#hero">Welcome {{ user.username }}</a></li>
+            <li><a class="getstarted scrollto" href="{% url 'user_logout' %}">Logout</a></li>
+          {% else %}
+            <li><a class="getstarted scrollto" href="{% url 'user_register' %}">Register</a></li>
+            <li><a class="getstarted scrollto" href="{% url 'user_login' %}">Login</a></li>
+          {% endif %}
+          </ul>
+          <i class="bi bi-list mobile-nav-toggle"></i>
+        </nav><!-- .navbar -->
+      </div><!-- End Header Container -->
+    </div>
+  </header><!-- End Header -->
+
+  <section class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <div class="card">
+          <div class="card-header">
+            <h2>Order Placed Successfully!</h2>
+          </div>
+          <div class="card-body">
+            <h3>Order ID: {{ order.order_id }}</h3>
+            <h4>Items:</h4>
+            <div class="table-responsive">
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>Product Name</th>
+                    <th>Quantity</th>
+                    <th>Price per Unit</th>
+                    <th>Total Price</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for item in order.items.all %}
+                  <tr>
+                    <td>{{ item.product.name }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>Rs. {{ item.product.price }}</td>
+                    <td>Rs. {{ item.get_total_item_price }}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+
+            <p>Total Price: Rs. {{ order.get_total_price }}</p>
+            <p>Thank you for your purchase!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Vendor JS Files -->
+  <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'vendor/swiper/swiper-bundle.min.js' %}"></script>
+
+  <!-- Template Main JS File -->
+  <script src="{% static 'js/main.js' %}"></script>
+</body>
+
+</html>

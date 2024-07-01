@@ -1,0 +1,195 @@
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+	{% load static %}
+	{% load cart_template_tag %}
+	
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Registration Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f3f3f3;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .main {
+            background-color: #fff;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            width: 300px;
+        }
+
+        .main h2 {
+            color: #4caf50;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        select {
+            width: 100%;
+            margin-bottom: 15px;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        button[type="submit"] {
+            padding: 15px;
+            border-radius: 10px;
+            border: none;
+            background-color: #4caf50;
+            color: white;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+        }
+
+        /* Styling for navbar */
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header .logo a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 24px;
+        }
+
+        header nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        header nav ul li {
+            margin-right: 20px;
+        }
+
+        header nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 18px;
+            transition: 0.3s ease;
+        }
+
+        header nav ul li a:hover {
+            color: #4caf50;
+        }
+
+        /* Red dot for cart item count */
+        .cart-item-count {
+            color: red;
+            font-size: 12px;
+            position: relative;
+            top: -5px;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <a href="{% url 'index' %}">Ashish-eCommerce</a>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="{% url 'index' %}">Home</a></li>
+                    {% if user.is_authenticated %}
+                    <li><a href="{% url 'orderlist' %}">Cart {% if request.user.cart.count > 0 %}<span class="cart-item-count">{{ request.user.cart.count }}</span>{% endif %}</a></li>
+                    <li><a href="{% url 'order_history' %}">Order History</a></li>
+                    <li><a href="#">{{ user.username|upper }}</a></li>
+                    <li><a href="{% url 'user_logout' %}">Logout</a></li>
+                    {% else %}
+                    <li><a href="{% url 'user_register' %}">Register</a></li>
+                    <li><a href="{% url 'user_login' %}">Login</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="main">
+        {% if messages %}
+        <ul class="messages">
+          {% for message in messages %}
+            <h5 class="login-title badge badge-light" style="color:red;">{{ message }}</h5>
+          {% endfor %}
+        </ul>
+      {% endif %}
+            <h1>Login</h1>
+            <form action="" method ="POST">
+                {% csrf_token %}
+                  <label for="first">
+                        Username:
+                  </label>
+                  <input type="text" 
+                         id="username" 
+                         name="username" 
+                         placeholder="Enter your Username" required>
+
+                  <label for="password">
+                        Password:
+                  </label>
+                  <input type="password"
+                         id="password" 
+                         name="password"
+                         placeholder="Enter your Password" required>
+
+                  <div class="wrap">
+                        <button type="submit"
+                                onclick="solve()">
+                              Login
+                        </button>
+                  </div>
+            </form>
+            <p>Not registered?      
+                  <a href="{% url 'user_register' %}"
+                     style="text-decoration: none;">
+                        Create an account
+                  </a>
+            </p>
+      </div>
+</body>
+
+</html>

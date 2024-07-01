@@ -1,0 +1,164 @@
+{% load static %}
+{% load cart_template_tag %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Ashish-eCommerce - Order History</title>
+    <meta content="" name="description">
+    <meta content="" name="keywords">
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    <style>
+        /* Custom CSS for table styling */
+        .table {
+            width: 100%;
+            margin-bottom: 1rem;
+            color: #212529;
+            border-collapse: collapse;
+            border: 1px solid #dee2e6; /* Border around the table */
+        }
+
+        .table th,
+        .table td {
+            padding: 0.75rem;
+            vertical-align: top;
+            border-top: 1px solid #dee2e6;
+        }
+
+        .table thead th {
+            vertical-align: bottom;
+            border-bottom: 2px solid #dee2e6;
+            background-color: #343a40;
+            color: #ffffff;
+        }
+
+        .table tbody + tbody {
+            border-top: 2px solid #dee2e6;
+        }
+
+        .table .table {
+            background-color: #f8f9fa;
+        }
+
+        /* Custom CSS to remove list style */
+        .table td ul {
+            list-style-type: none; /* Remove bullet points */
+            padding: 0; /* Remove default padding */
+            margin: 0; /* Remove default margin */
+        }
+    </style>
+</head>
+
+<body>
+    <header id="header" class="fixed-top d-flex align-items-center">
+        <div class="container">
+            <div class="header-container d-flex align-items-center justify-content-between">
+                <div class="logo">
+                    <h1 class="text-light"><a href="{% url 'index' %}"><span>Ashish-eCommerce</span></a></h1>
+                </div>
+                <nav id="navbar" class="navbar">
+                    {% if user.is_authenticated %}
+                    <ul class="list-unstyled">
+                        <li><a class="nav-link scrollto {% if request.resolver_match.url_name == 'index' %}active{% endif %}"
+                                href="{% url 'index' %}">Home</a></li>
+                        <li><a class="nav-link scrollto {% if request.resolver_match.url_name == 'orderlist' %}active{% endif %}"
+                                href="{% url 'orderlist' %}">Cart &nbsp;<div style="color:red;">{{ request.user|cart_item_count }}</div></a></li>
+                        <li><a class="nav-link scrollto active" href="{% url 'order_history' %}">Order History</a></li>
+                        <li><a class="nav-link scrollto {% if request.resolver_match.url_name == 'index' %}active{% endif %}"
+                                href="#hero">Welcome {{ user.username|upper }}</a></li>
+                        <li><a class="getstarted scrollto" href="{% url 'user_logout' %}">Logout</a></li>
+                    </ul>
+                    {% else %}
+                    <ul class="list-unstyled">
+                        <li><a class="getstarted scrollto" href="{% url 'user_register' %}">Register</a></li>
+                        <li><a class="getstarted scrollto" href="{% url 'user_login' %}">Login</a></li>
+                    </ul>
+                    {% endif %}
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content: Order History -->
+    <main id="main">
+        <div class="container">
+            <h1 class="my-4">Your Order History</h1>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">Order ID</th>
+                            <th scope="col">Ordered Date</th>
+                            <th scope="col">Total Price</th>
+                            <th scope="col">Product Name</th>
+                            <th scope="col">Price per Unit</th>
+                            <th scope="col">Quantity</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in orders %}
+                        <tr>
+                            <td>{{ order.id }}</td>
+                            <td>{{ order.ordered_date }}</td>
+                            <td>Rs. {{ order.get_total_price }}</td>
+                            <td>
+                                <ul>
+                                    {% for item in order.items.all %}
+                                    <li>{{ item.product.name }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </td>
+                            <td>
+                                <ul>
+                                    {% for item in order.items.all %}
+                                    <li>Rs. {{ item.product.price }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </td>
+                            <td>
+                                <ul>
+                                    {% for item in order.items.all %}
+                                    <li>{{ item.quantity }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6">No orders found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer bg-dark text-white py-4">
+        <div class="container d-md-flex justify-content-between">
+            <div class="me-md-auto text-center text-md-start">
+                <div class="copyright">
+                    &copy; Copyright <strong><span>Ashish Site</span></strong>. All Rights Reserved
+                </div>
+                <div class="credits">
+                    Designed by <a href="#" class="text-white">Ashish</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+    <!-- Scripts -->
+    <script src="{% static 'vendor/aos/aos.js' %}"></script>
+    <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'vendor/isotope-layout/isotope.pkgd.min.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+
+</html>
